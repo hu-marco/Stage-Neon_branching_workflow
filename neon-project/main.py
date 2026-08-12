@@ -1,8 +1,12 @@
 from fastapi import FastAPI
+from routers import database
 
 app = FastAPI(
     title="E-commerce"
 )
 
-if __name__ == "__main__":
-    app = App()
+@app.get("/")
+def root():
+    return {"Hello":"World"}
+
+app.include_router(database.router)

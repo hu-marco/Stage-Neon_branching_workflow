@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, Numeric, String, ForeignKey , DateTime
-from app.database import Base
+from sqlalchemy import Column, Integer, Numeric, String, ForeignKey , Date
+from database import Base
 
 class User(Base):
 
@@ -27,7 +27,7 @@ class Order(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))
-    created_at = Column(DateTime)
+    created_at = Column(Date)
     total = Column(Numeric)
 
     coupon_code = Column(String, nullable=True)

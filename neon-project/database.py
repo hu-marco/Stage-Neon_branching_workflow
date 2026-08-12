@@ -6,9 +6,12 @@ from psycopg2.extras import execute_values
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-import os
 
+load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL not set or loaded")
 
 engine = create_engine(DATABASE_URL)
 
@@ -20,15 +23,17 @@ SessionLocal = sessionmaker(
 
 Base = declarative_base()
 
-
+def get_db():
+    db= SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close
 
 #create_table
 def create_all_table():
-    load_dotenv()
-    conn_string = os.getenv("DATABASE_URL")
-    
     try:
-        with psycopg2.connect(conn_string) as conn:
+        with psycopg2.connect(DATABASE_URL) as conn:
             print("Connection established")
             with conn.cursor() as cur:
             
@@ -67,7 +72,7 @@ def create_all_table():
                     CREATE TABLE products (
                         id SERIAL PRIMARY KEY,
                         name VARCHAR(15),
-                        price DOUBLE,
+                        price FLOAT,
                         stock INTEGER,
                         category_id INTEGER,
                         foreign key(category_id)
@@ -82,7 +87,7 @@ def create_all_table():
                         id SERIAL PRIMARY KEY,
                         user_id INTEGER NOT NULL,
                         created_at DATE,
-                        total DOUBLE,
+                        total FLOAT,
                         foreign key(user_id)
                         references users(id)
                     );
@@ -106,34 +111,33 @@ def create_all_table():
                 
                 print("All the tables are created")
                 conn.commit()
+                return True
     except Exception as e:
         print("Connection failed.")
         print(e)
+        return False
     
 
 #insert the initial data
 def insert_initial_data():
-    load_dotenv()
-    conn_string = os.getenv("DATABASE_URL")
-    
     fake = Faker('en_US')
     
     try:
-        with psycopg2.connect(conn_string) as conn:
+        with psycopg2.connect(DATABASE_URL) as conn:
             print("Connection established")
             with conn.cursor() as cur:
 
                 # users table
                 for _ in range(500):
-                    name = fake.first_name()
-                    email = fake.email()
+                    name = fake.first_name()[:20]
+                    email = fake.email()[:20]
                     cur.execute(
                         """INSERT INTO users (name, email)
-                        VALUES (%s, %s)""",
+                        VALUES (%s, %s);
+                        """,
                         (name, email)
                     )
                 print("users data added")
-                
                 
                 # categories table
                 cur.execute(
@@ -146,7 +150,7 @@ def insert_initial_data():
                     ('Sports & Outdoors'),
                     ('Hobbie & Toys'),
                     ('Fashion & Apparel'),
-                    ('Game'),
+                    ('Game');
                     """
                 )
                 print("categories data added")
@@ -188,92 +192,70 @@ def insert_initial_data():
                 "Card set"
                 ]
                 
-                batch_size = 500
-
-                for _ in range(0, 2000, batch_size):
-                    product_data = []
-                    
-                    for _ in range(batch_size):
-                        product_data.append((
-                            random.choice(products),
-                            random.uniform(1.5, 1999.99),
-                            random.randint(1, 100000)
-                        ))
-                
-                cur.execute(
-                """INSERT INTO products (name, pric, stock)
-                    VALUES %s;
-                """,
-                product_data
-                )
+                for _ in range(2000):
+                    product=random.choice(products)
+                    price=random.uniform(1.5, 1999.99)
+                    stock=random.randint(1, 100000)
+                    cur.execute(
+                    """INSERT INTO products (name, price, stock)
+                    VALUES (%s, %s, %s);
+                    """,
+                    (product, price, stock)
+                    )
                 print("products data added")
                 
                 # addresses table
-                for x in range(500):
+                for x in range(1, 501):
                     city = fake.city()[:20]
-                    street = fake.street_name()[:20],
+                    street = fake.street_name()[:20]
                     cur.execute(
                         """INSERT INTO addresses 
-                        (user_id, city, street )
+                        (user_id, city, street)
                         VALUES (%s, %s, %s)""",
                         (x, city, street)
                     )
                 print("addresses data added")
                 
                 # orders table
-                batch_size = 500
-
-                for _ in range(0, 10000, batch_size):
-                    order_data = []
-                    
-                    for _ in range(batch_size):
-                        order_data.append((
-                            random.randint(1, 500), #user_id
-                            fake.date(end_datetime="+1w"), #created_at
-                            random.uniform(1.5, 1999.99) #total
-                        ))
-                
-                cur.execute(
-                """INSERT INTO orders (user_id, created_at, total)
-                    VALUES %s;
-                """,
-                order_data
-                )
+                for _ in range(10000):
+                    user_id = random.randint(1, 500) #user_id
+                    created_at = fake.date(end_datetime="+1w") #created_at
+                    total = random.uniform(1.5, 1999.99) #total
+                                        
+                    cur.execute(
+                    """INSERT INTO orders (user_id, created_at, total)
+                    VALUES (%s, %s, %s);
+                    """,
+                    (user_id, created_at, total)
+                    )
                 print("orders data added")
                 
                 # order_items
-                for _ in range(0, 30000, batch_size):
-                    order_item_data = []
-                    
-                    for _ in range(batch_size):
-                        order_item_data.append((
-                            random.randint(1, 10000), #order_id
-                            random.randint(1, 2000), #product_at
-                            random.randint(1, 100) #quantity
-                        ))
-                
-                cur.execute(
-                """INSERT INTO order_items
-                (order_id, product_id, quantity)
-                    VALUES %s;
-                """,
-                order_item_data
-                )
+                for _ in range(30000):
+                    order_id = random.randint(1, 10000)#order_id
+                    product_id = random.randint(1, 2000) #product_id
+                    quantity = random.randint(1, 100)#quantity
+                        
+                    cur.execute(
+                    """INSERT INTO order_items
+                    (order_id, product_id, quantity)
+                    VALUES (%s, %s, %s);
+                    """,
+                    (order_id, product_id, quantity)
+                    )
                 print("order_items data added")
-                
-                
                 conn.commit()
+                return True
     except Exception as e:
         print("Connection failed.")
         print(e)
+        return False
 
 
 #delete all the table
 def delete_all_table():
-    load_dotenv()
-    conn_string = os.getenv("DATABASE_URL")
     try:
-        with psycopg2.connect(conn_string) as conn:
+        with psycopg2.connect(DATABASE_URL) as conn:
             print("Connection established")
             with conn.cursor() as cur:
                 cur.execute("DROP TABLE IF EXISTS order_items;")
@@ -284,15 +266,15 @@ def delete_all_table():
                 cur.execute("DROP TABLE IF EXISTS users;")
                 conn.commit()
                 print("All the tables are deleted")
+                return True
     except Exception as e:
         print("Connection failed.")
         print(e)
+        return False
       
 def delete_all_data():
-    load_dotenv()
-    conn_string = os.getenv("DATABASE_URL")
     try:
-        with psycopg2.connect(conn_string) as conn:
+        with psycopg2.connect(DATABASE_URL) as conn:
             print("Connection established")
             
             with conn.cursor() as cur:
@@ -304,8 +286,9 @@ def delete_all_data():
                 
                 conn.commit()
                 print("All the data are deleted")
+                return True
     except Exception as e:
         print("Connection failed.")
         print(e)
-
+        return False
         
