@@ -15,8 +15,22 @@ role_name = os.environ["DATABASE_ROLE"]
 NEON_API_KEY = os.environ["NEON_API_KEY"]
 NEON_PROJECT_ID = os.environ["NEON_PROJECT_ID"]
 
-"""
+
 def test_create_coupon():
+    branch_id = os.environ.get("NEON_BRANCH_ID")
+    test_session = db.create_session(database_url)
+
+    def override_get_db():
+        session = test_session()
+        try:
+            yield session
+        finally:
+            session.close()
+
+    app.dependency_overrides[db.get_db] = override_get_db
+
+    client = TestClient(app)
+
     response = client.post(
         "/create_coupon",
         json={
@@ -26,6 +40,9 @@ def test_create_coupon():
     )
 
     assert response.status_code == 200
+
+    finally:
+        app.dependency_overrides.clear()
 """
 def test_simulation():
     neon_client = NeonClient(
@@ -73,4 +90,4 @@ def test_simulation():
     finally:
         app.dependency_overrides.clear()
         neon_client.delete_branch(branch_id)
-    
+"""    
