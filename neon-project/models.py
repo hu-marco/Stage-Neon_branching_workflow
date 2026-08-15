@@ -49,9 +49,9 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
   
-class Category(Base):
+class Address(Base):
 
-    __tablename__ = "categories"
+    __tablename__ = "addresses"
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))

@@ -3,8 +3,6 @@ from dotenv import load_dotenv
 from branch import NeonClient
 import os
 
-
-
 router = APIRouter()
 
 load_dotenv()
@@ -26,7 +24,7 @@ def create_branch():
 
     print("Branch:", branch["name"])
     print("Branch ID:", branch["id"])
-
+   
     print(result)
     return branch
 
@@ -39,10 +37,7 @@ def delete_branch():
     )
 
     client.delete_branch(
-        branch_id="br-tiny-sea-ab7b2u4i"
+        branch_id="br-weathered-water-abit6t59"
     )
     return {"Status":" complete" }
-
-
-
 

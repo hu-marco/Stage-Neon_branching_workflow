@@ -23,6 +23,20 @@ SessionLocal = sessionmaker(
 
 Base = declarative_base()
 
+def create_session(database_url: str):
+    engine = create_engine(
+        database_url,
+        pool_pre_ping=True,
+    )
+
+    SessionLocal = sessionmaker(
+        bind=engine,
+        autocommit=False,
+        autoflush=False,
+    )
+
+    return SessionLocal
+
 def get_db():
     db= SessionLocal()
     try:

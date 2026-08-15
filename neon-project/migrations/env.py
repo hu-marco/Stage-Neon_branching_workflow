@@ -7,15 +7,22 @@ from alembic import context
 
 from dotenv import load_dotenv
 import os
-
 from models import *
 from database import Base
 
 load_dotenv()
 
+
+#database_url = os.environ["DATABASE_URL"]
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+
+#config.set_main_option(
+#    "sqlalchemy.url",
+#    database_url,
+#)
 
 
 db_url= os.getenv("DATABASE_URL")

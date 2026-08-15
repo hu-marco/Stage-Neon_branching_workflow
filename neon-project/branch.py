@@ -1,6 +1,8 @@
 import requests
 import os
 from dotenv import load_dotenv
+import time
+import subprocess
 
 load_dotenv()
 BASE_URL = "https://console.neon.tech/api/v2"
@@ -43,8 +45,15 @@ class NeonClient:
 
         response = self.session.post(url, json=payload)
         response.raise_for_status()
-
-        return response.json()
+        data = response.json()
+        operation_id = next(
+            op["id"]
+            for op in data["operations"]
+            if op["action"] == "create_branch"
+        )
+        self.wait_for_operation(operation_id)
+        
+        return data
 
     def get_connection_uri(
         self,
@@ -76,7 +85,7 @@ class NeonClient:
         timeout: int = 120,
         ):
         url = (
-            f"{self.BASE_URL}"
+            f"{BASE_URL}"
             f"/projects/{self.project_id}"
             f"/operations/{operation_id}"
         )
@@ -106,35 +115,6 @@ class NeonClient:
 
             time.sleep(2)
             
-    def get_connection_uri(
-            self,
-            branch_id: str,
-            database_name: str,
-            role_name: str,
-            pooled: bool = False,
-        ):
-            url = (
-                f"{self.BASE_URL}"
-                f"/projects/{self.project_id}"
-                f"/connection_uri"
-            )
-
-            params = {
-                "branch_id": branch_id,
-                "database_name": database_name,
-                "role_name": role_name,
-                "pooled": str(pooled).lower(),
-            }
-
-            response = self.session.get(
-                url,
-                params=params,
-            )
-
-            response.raise_for_status()
-
-            return response.json()["uri"]
-
     def delete_branch(
         self,
         branch_id: str,
@@ -156,3 +136,14 @@ class NeonClient:
         )
 
         response.raise_for_status()
+        
+    def run_migrations(self, revision:str ,database_url: str):
+        env = os.environ.copy()
+        env["DATABASE_URL"] = database_url
+
+        subprocess.run(
+            ["alembic", "upgrade", revision],
+            env=env,
+            check=True,
+        )
+   
