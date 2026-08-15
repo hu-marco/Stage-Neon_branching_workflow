@@ -1,0 +1,67 @@
+name: coupons table
+
+on:
+  pull_request:
+
+  workflow_dispatch:
+    inputs:
+      migration_revision:
+        description: "Alembic migration revision"
+        required: false
+        default: "head"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+      NEON_PROJECT_ID: ${{ secrets.NEON_PROJECT_ID }}
+      DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+      DATABASE_ROLE: ${{ secrets.DATABASE_ROLE }}
+
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      MIGRATION_REVISION: ${{ inputs.migration_revision || 'head' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r neon-project/requirements.txt
+
+      - name: Create Neon branch
+        run: |
+          python  setup_branch.py create
+
+      - name: Run database migrations
+        run: |
+          python  setup_branch.py migrate "$MIGRATION_REVISION"
+
+      - name: Run tests
+        run: |
+          pytest \
+            --junitxml=test-results.xml \
+            --html=test-report.html \
+            --self-contained-html
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: |
+            test-results.xml
+            test-report.html
+
+      - name: Delete Neon branch
+        if: always()
+        run: |
+          python setup_branch.py cleanup
