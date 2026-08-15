@@ -70,5 +70,7 @@ def test_simulation():
 
     assert response.status_code == 200
 
-    app.dependency_overrides.clear()
+    finally:
+        app.dependency_overrides.clear()
+        neon_client.delete_branch(branch_id)
     
