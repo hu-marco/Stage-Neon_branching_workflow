@@ -2,13 +2,14 @@ name: coupons table
 
 on:
   pull_request:
-
+    branches: [ "main" ]
   workflow_dispatch:
     inputs:
       migration_revision:
         description: "Alembic migration revision"
         required: false
         default: "head"
+  
 
 jobs:
   test:
@@ -43,7 +44,7 @@ jobs:
 
       - name: Run database migrations
         run: |
-          python  setup_branch.py migrate "$MIGRATION_REVISION"
+          python neon-project/setup_branch.py migrate "$MIGRATION_REVISION"
 
       - name: Run tests
         run: |
@@ -64,4 +65,4 @@ jobs:
       - name: Delete Neon branch
         if: always()
         run: |
-          python setup_branch.py cleanup
+          python  neon-project/setup_branch.py cleanup
