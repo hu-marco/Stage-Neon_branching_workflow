@@ -39,11 +39,11 @@ jobs:
 
       - name: Create Neon branch
         run: |
-          python scripts/neon_ci.py create
+          python  setup_branch.py create
 
       - name: Run database migrations
         run: |
-          python scripts/neon_ci.py migrate "$MIGRATION_REVISION"
+          python  setup_branch.py migrate "$MIGRATION_REVISION"
 
       - name: Run tests
         run: |
@@ -64,4 +64,4 @@ jobs:
       - name: Delete Neon branch
         if: always()
         run: |
-          python scripts/neon_ci.py cleanup
+          python setup_branch.py cleanup
