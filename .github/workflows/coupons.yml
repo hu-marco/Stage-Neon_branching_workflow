@@ -47,6 +47,7 @@ jobs:
           python neon-project/setup_branch.py migrate "$MIGRATION_REVISION"
 
       - name: Run tests
+        working-directory: neon-project
         run: |
           pytest \
             --junitxml=test-results.xml \
