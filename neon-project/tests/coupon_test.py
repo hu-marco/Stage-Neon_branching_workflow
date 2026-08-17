@@ -38,7 +38,7 @@ def test_create_coupon():
             }
         )
 
-    assert response.status_code == 200
+        assert response.status_code == 200
 
     finally:
         app.dependency_overrides.clear()
