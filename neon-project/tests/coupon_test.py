@@ -17,14 +17,9 @@ NEON_PROJECT_ID = os.environ["NEON_PROJECT_ID"]
 
 
 def test_create_coupon():
-    branch_id = os.environ.get("NEON_BRANCH_ID")
-    test_session = db.create_session("DATABASE_URL")
+    test_session = db.create_session(os.environ["DATABASE_URL"])
 
-<<<<<<< HEAD
-    def override_get_db():  
-=======
     def override_get_db():
->>>>>>> 3fa03a5092aa0458be91ed3cd306bfc41a5546a9
         session = test_session()
         try:
             yield session
@@ -34,7 +29,7 @@ def test_create_coupon():
     app.dependency_overrides[db.get_db] = override_get_db
 
     client = TestClient(app)
-
+    try:
     response = client.post(
         "/create_coupon",
         json={
@@ -95,8 +90,3 @@ def test_simulation():
         app.dependency_overrides.clear()
         neon_client.delete_branch(branch_id)
 """    
-=======
-    app.dependency_overrides.clear()
-    
-"""
->>>>>>> 3fa03a5092aa0458be91ed3cd306bfc41a5546a9
