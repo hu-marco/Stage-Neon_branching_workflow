@@ -18,9 +18,9 @@ NEON_PROJECT_ID = os.environ["NEON_PROJECT_ID"]
 
 def test_create_coupon():
     branch_id = os.environ.get("NEON_BRANCH_ID")
-    test_session = db.create_session(database_url)
+    test_session = db.create_session("DATABASE_URL")
 
-    def override_get_db():
+    def override_get_db():  
         session = test_session()
         try:
             yield session
