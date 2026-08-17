@@ -140,10 +140,15 @@ class NeonClient:
     def run_migrations(self, revision:str ,database_url: str):
         env = os.environ.copy()
         env["DATABASE_URL"] = database_url
-
+        
+        project_dir = os.path.dirname(os.path.abspath(__file__))
+        
+        
+        
         subprocess.run(
-            ["alembic", "upgrade", revision],
-            env=env,
-            check=True,
+        ["alembic", "upgrade", revision],
+        env=env,
+        cwd=project_dir,
+        check=True,
         )
    
