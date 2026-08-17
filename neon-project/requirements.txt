@@ -8,4 +8,8 @@ faker
 alembic
 requests
 pytest
+<<<<<<< HEAD
 pytest-html
+=======
+pytest-html
+>>>>>>> 3fa03a5092aa0458be91ed3cd306bfc41a5546a9
