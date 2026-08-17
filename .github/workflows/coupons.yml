@@ -21,7 +21,7 @@ jobs:
       DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
       DATABASE_ROLE: ${{ secrets.DATABASE_ROLE }}
 
-      PR_NUMBER: ${{ github.event.pull_request.number }}
+      PR_NUMBER: ${{ github.event.pull_request.number || 'local'}}
       MIGRATION_REVISION: ${{ inputs.migration_revision || 'head' }}
 
     steps:
@@ -40,7 +40,7 @@ jobs:
 
       - name: Create Neon branch
         run: |
-          python  setup_branch.py create
+          python  neon-project/setup_branch.py create
 
       - name: Run database migrations
         run: |
