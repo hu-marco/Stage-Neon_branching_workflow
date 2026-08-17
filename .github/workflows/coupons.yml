@@ -58,7 +58,7 @@ jobs:
       - name: Run tests
         working-directory: neon-project
         run: |
-          pytest \
+          python -m pytest \
             --junitxml=test-results.xml \
             --html=test-report.html \
             --self-contained-html
