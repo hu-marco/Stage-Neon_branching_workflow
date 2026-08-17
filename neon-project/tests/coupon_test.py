@@ -30,13 +30,13 @@ def test_create_coupon():
 
     client = TestClient(app)
     try:
-    response = client.post(
-        "/create_coupon",
-        json={
-            "code": "WELCOME10",
-            "discount": 10
-        }
-    )
+        response = client.post(
+            "/create_coupon",
+            json={
+                "code": "WELCOME10",
+                "discount": 10
+            }
+        )
 
     assert response.status_code == 200
 
@@ -85,7 +85,6 @@ def test_simulation():
     )
     assert response.status_code == 200
 
-<<<<<<< HEAD
     finally:
         app.dependency_overrides.clear()
         neon_client.delete_branch(branch_id)
