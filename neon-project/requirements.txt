@@ -9,7 +9,3 @@ alembic
 requests
 pytest
 pytest-html
-<<<<<<< HEAD
-
-=======
->>>>>>> cadc7daf4b17bb4fe9d71d111e6f81325a1f961e
