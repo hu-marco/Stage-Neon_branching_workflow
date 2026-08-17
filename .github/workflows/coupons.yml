@@ -40,7 +40,7 @@ jobs:
 
       - name: Create Neon branch
         run: |
-          python  setup_branch.py create
+          python  neon-project/setup_branch.py create
 
       - name: Run database migrations
         run: |
