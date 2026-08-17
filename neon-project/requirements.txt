@@ -9,3 +9,4 @@ alembic
 requests
 pytest
 pytest-html
+httpx2
