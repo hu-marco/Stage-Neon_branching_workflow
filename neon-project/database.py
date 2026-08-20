@@ -6,6 +6,7 @@ from psycopg2.extras import execute_values
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+from decimal import *
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -101,7 +102,6 @@ def create_all_table():
                         id SERIAL PRIMARY KEY,
                         user_id INTEGER NOT NULL,
                         created_at DATE,
-                        total FLOAT,
                         foreign key(user_id)
                         references users(id)
                     );
@@ -206,15 +206,23 @@ def insert_initial_data():
                 "Card set"
                 ]
                 
-                for _ in range(2000):
-                    product=random.choice(products)
-                    price=random.uniform(1.5, 1999.99)
-                    stock=random.randint(1, 100000)
-                    cur.execute(
-                    """INSERT INTO products (name, price, stock)
-                    VALUES (%s, %s, %s);
-                    """,
-                    (product, price, stock)
+                batch_size = 500
+
+                for _ in range(0,2000, batch_size):
+                    products_data = []
+                    
+                    for _ in range(batch_size):
+                        products_data.append((
+                            random.choice(products), #product name
+                            Decimal(str(round(random.uniform(1.5, 1999.99), 2))), # product price
+                            random.randint(1, 100000) # products stock
+                    ))    
+                    execute_values(
+                        cur,
+                        """INSERT INTO products (name, price, stock)
+                        VALUES %s;
+                        """,
+                        products_data
                     )
                 print("products data added")
                 
@@ -231,31 +239,38 @@ def insert_initial_data():
                 print("addresses data added")
                 
                 # orders table
-                for _ in range(10000):
-                    user_id = random.randint(1, 500) #user_id
-                    created_at = fake.date(end_datetime="+1w") #created_at
-                    total = random.uniform(1.5, 1999.99) #total
-                                        
-                    cur.execute(
-                    """INSERT INTO orders (user_id, created_at, total)
-                    VALUES (%s, %s, %s);
+                for _ in range(0,10000, batch_size):
+                    orders_data = []
+                    for _ in range(batch_size):
+                        orders_data.append((
+                            random.randint(1, 500), #user_id
+                            fake.date(end_datetime="+1w") #created_at
+                        ))                
+                    execute_values(
+                        cur,
+                    """INSERT INTO orders (user_id, created_at)
+                    VALUES  %s;
                     """,
-                    (user_id, created_at, total)
+                    orders_data
                     )
                 print("orders data added")
                 
                 # order_items
-                for _ in range(30000):
-                    order_id = random.randint(1, 10000)#order_id
-                    product_id = random.randint(1, 2000) #product_id
-                    quantity = random.randint(1, 100)#quantity
-                        
-                    cur.execute(
+                for _ in range(0, 30000, batch_size):
+                    orders_items_data = []
+                    for _ in range(batch_size):
+                        orders_items_data.append((
+                            random.randint(1, 10000), #order_id
+                            random.randint(1, 2000), #product_id
+                            random.randint(1, 100)#quantity
+                        ))
+                    execute_values(
+                    cur,
                     """INSERT INTO order_items
                     (order_id, product_id, quantity)
-                    VALUES (%s, %s, %s);
+                    VALUES %s;
                     """,
-                    (order_id, product_id, quantity)
+                    orders_items_data
                     )
                 print("order_items data added")
                 conn.commit()
@@ -274,9 +289,9 @@ def delete_all_table():
             with conn.cursor() as cur:
                 cur.execute("DROP TABLE IF EXISTS order_items;")
                 cur.execute("DROP TABLE IF EXISTS orders ;")
-                cur.execute("DROP TABLE IF EXISTS categories;")
-                cur.execute("DROP TABLE IF EXISTS address;")
                 cur.execute("DROP TABLE IF EXISTS products;")
+                cur.execute("DROP TABLE IF EXISTS categories;")
+                cur.execute("DROP TABLE IF EXISTS addresses;")
                 cur.execute("DROP TABLE IF EXISTS users;")
                 conn.commit()
                 print("All the tables are deleted")

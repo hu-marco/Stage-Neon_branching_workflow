@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends
 from dotenv import load_dotenv
-from branch import NeonClient
 import os
+
+from branch import NeonClient
 
 router = APIRouter()
 

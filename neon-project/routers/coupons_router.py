@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
-import database as db
 import os
-from schemas import CouponSchema
 from sqlalchemy.orm import Session
+from schemas import CouponSchema
+import database as db
 from models import Coupon
 
 router = APIRouter()

@@ -19,7 +19,6 @@ class Product(Base):
     price= Column(Numeric)
     stock = Column(Integer)
 
-    coupon_code = Column(String, nullable=True)
 
 class Order(Base):
 
@@ -28,12 +27,12 @@ class Order(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     created_at = Column(Date)
-    total = Column(Numeric)
+    
+    idx_orders_created = Column(Date, nullable=True)
+    coupon_code = Column(String,  ForeignKey("coupons.code"), nullable=True)
 
-    coupon_code = Column(String, nullable=True)
 
-
-class Order_item(Base):
+class OrderItem(Base):
 
     __tablename__ = "order_items"
 
