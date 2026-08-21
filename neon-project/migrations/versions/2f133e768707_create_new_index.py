@@ -19,7 +19,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.create_index('idx_orders_created', 'orders', ['created_at'], unique=True)
+    op.create_index('idx_orders_created', 'orders', ['created_at'])
 
 def downgrade() -> None:
     op.drop_index('idx_orders_created', table_name='orders')
