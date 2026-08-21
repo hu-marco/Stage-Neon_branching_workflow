@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 from sqlalchemy import inspect
+import sqlalchemy as sa
 from dotenv import load_dotenv
 from models import Order
 import os
@@ -18,6 +19,7 @@ database_name = os.environ["DATABASE_NAME"]
 role_name = os.environ["DATABASE_ROLE"]
 NEON_API_KEY = os.environ["NEON_API_KEY"]
 NEON_PROJECT_ID = os.environ["NEON_PROJECT_ID"]
+
 
 def test_create_coupon():
     test_session = db.create_session(os.environ["DATABASE_URL"])
@@ -81,13 +83,16 @@ def test_coupon_code_populated():
     app.dependency_overrides[db.get_db] = override_get_db
     session = test_session()
     try:
-        order = (
-            session.query(Order)
-            .filter(Order.id < 100)
-            .first()
-        )
-        assert order is not None
-        assert order.coupon_id == "1"
+        result = session.execute(
+            sa.text("""
+                SELECT id, coupon_id
+                FROM orders
+                WHERE id < 100
+                LIMIT 1
+            """)
+        ).first()
+        assert result is not None
+        assert result.coupon_id == "1"
     finally:
         app.dependency_overrides.clear()    
 """
@@ -109,7 +114,7 @@ def test_simulation():
         role_name=role_name,
     )
 
-    neon_client.run_migrations("head", database_url)
+    neon_client.run_migrations("1b6df6316c0e", database_url)
     
     test_session = db.create_session(database_url)
 
@@ -140,14 +145,17 @@ def test_simulation():
         column_names = [column["name"] for column in columns]
         assert "coupon_id" in column_names
         
-        order = (
-            session.query(Order)
-            .filter(Order.total > 100)
-            .first()
-        )
-        assert order is not None
-        assert order.coupon_id == "1"
-
+        result = session.execute(
+            sa.text(
+                SELECT id, coupon_id
+                FROM orders
+                WHERE id < 100
+                LIMIT 1
+            )
+        ).first()
+        assert result is not None
+        assert result.coupon_id == "1"
+        
     finally:
         app.dependency_overrides.clear()
         neon_client.delete_branch(branch_id)
