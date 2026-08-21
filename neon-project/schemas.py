@@ -22,7 +22,7 @@ class OrderSchema(BaseModel):
     user_id : int
     created_at : datetime    
     idx_orders_created : datetime
-    coupon_code : str
+    coupon_id : int
     
     model_config = {
     "from_attributes": True

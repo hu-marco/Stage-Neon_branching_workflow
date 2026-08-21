@@ -29,7 +29,7 @@ class Order(Base):
     created_at = Column(Date)
     
     idx_orders_created = Column(Date, nullable=True)
-    coupon_code = Column(String,  ForeignKey("coupons.code"), nullable=True)
+    coupon_id = Column(Integer,  ForeignKey("coupons.id"), nullable=True)
 
 
 class OrderItem(Base):
