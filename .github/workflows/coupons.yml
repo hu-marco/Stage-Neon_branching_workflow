@@ -2,7 +2,7 @@ name: coupons table
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: [ "coupon" ]
   workflow_dispatch:
     inputs:
       migration_revision:
@@ -39,12 +39,13 @@ jobs:
           pip install -r neon-project/requirements.txt
 
       - name: Create Neon branch
+        working-directory: neon-project
         run: |
-          python  neon-project/setup_branch.py create
+          python setup_branch.py create
 
       - name: Run database migrations
         run: |
-          python neon-project/setup_branch.py migrate "$MIGRATION_REVISION"
+          python neon-project/setup_branch.py migrate 1b6df6316c0e
        
       - name: Check project
         working-directory: neon-project
@@ -58,7 +59,7 @@ jobs:
       - name: Run tests
         working-directory: neon-project
         run: |
-          python -m pytest \
+          python -m pytest tests/coupon_test.py\
             --junitxml=test-results.xml \
             --html=test-report.html \
             --self-contained-html
@@ -69,10 +70,11 @@ jobs:
         with:
           name: test-report
           path: |
-            test-results.xml
-            test-report.html
+            neon_project/test-results.xml
+            neon_project/test-report.html
 
       - name: Delete Neon branch
+        working-directory: neon-project
         if: always()
         run: |
-          python  neon-project/setup_branch.py cleanup
+          python setup_branch.py cleanup
