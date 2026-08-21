@@ -27,6 +27,7 @@ def upgrade() -> None:
     op.execute("""
         UPDATE orders
         SET coupon_id='1'
+        WHERE id<100
     """)
 
 

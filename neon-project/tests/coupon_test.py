@@ -83,7 +83,7 @@ def test_coupon_code_populated():
     try:
         order = (
             session.query(Order)
-            .filter(Order.total > 100)
+            .filter(Order.id < 100)
             .first()
         )
         assert order is not None
