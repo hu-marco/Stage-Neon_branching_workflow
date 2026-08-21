@@ -62,7 +62,7 @@ def test_coupon_code_present():
         inspector = inspect(session.bind)
         columns = inspector.get_columns("orders")
         column_names = [column["name"] for column in columns]
-        assert "coupon_code" in column_names
+        assert "coupon_id" in column_names
     finally:
         app.dependency_overrides.clear()
 
@@ -138,7 +138,7 @@ def test_simulation():
         inspector = inspect(session.bind)
         columns = inspector.get_columns("orders")
         column_names = [column["name"] for column in columns]
-        assert "coupon_code" in column_names
+        assert "coupon_id" in column_names
         
         order = (
             session.query(Order)

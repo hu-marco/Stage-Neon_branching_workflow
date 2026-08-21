@@ -6,8 +6,7 @@ class UserSchema(BaseModel):
     name : str
     email : str
 
-class Product(Base):
-
+class ProductSchema(BaseModel):
     name : str
     price : float
     stock : int
@@ -28,17 +27,16 @@ class OrderSchema(BaseModel):
     "from_attributes": True
     }
 
-class OrderItemSchema(Base):
+class OrderItemSchema(BaseModel):
     order_id : int
     product_id : int
     quantity :int 
 
 
-class Category(Base):
+class CategorySchema(BaseModel):
     name : str
     
-class Address(Base):
-
+class Address(BaseModel):
     user_id : int
     city : str
     street : str
