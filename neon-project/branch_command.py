@@ -1,4 +1,5 @@
 import os
+import time
 
 from branch import NeonClient
 
@@ -38,12 +39,18 @@ def create_database() -> str:
     return branch_id
     
 def run_migrations(revision):
+    start = time.perf_counter()
+
     client = get_client()
 
     client.run_migrations(
         revision=revision,
         database_url=os.environ["DATABASE_URL"],
     )
+    
+    end = time.perf_counter()
+    print(f"Tempo: {end - start:.6f} secondi")
+
 
 
 def cleanup_database():
