@@ -21,9 +21,9 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     
     op.alter_column(
-        "coupons",
-        "code",
-        existing_type=sa.Numeric(10, 2),
+        "orders",
+        "coupon_id",
+        existing_type=sa.Integer(),
         nullable=False,
     )
     raise RuntimeError("Test migration failure")
@@ -32,7 +32,7 @@ def upgrade() -> None:
 def downgrade() -> None:
     op.alter_column(
         "coupons",
-        "code",
-        existing_type=sa.Numeric(10, 2),
+        "coupon_id",
+        existing_type=sa.Integer(),
         nullable=True,
     )
