@@ -1,0 +1,72 @@
+name: total price in orders
+
+on:
+  pull_request:
+    branches: [ "total_price" ]
+  workflow_dispatch:
+    inputs:
+      migration_revision:
+        description: "Alembic migration revision"
+        required: false
+        default: "head"
+  
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+      NEON_PROJECT_ID: ${{ secrets.NEON_PROJECT_ID }}
+      DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+      DATABASE_ROLE: ${{ secrets.DATABASE_ROLE }}
+
+      PR_NUMBER: ${{ github.event.pull_request.number || 'local'}}
+      MIGRATION_REVISION: ${{ inputs.migration_revision || 'head' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r neon-project/requirements.txt
+
+      - name: Create Neon branch
+        working-directory: neon-project
+        run: |
+          python  setup_branch.py create
+
+      - name: Run database migrations
+        working-directory: neon-project
+        run: |
+          python setup_branch.py migrate f82eff2b844f
+          
+      - name: Run tests
+        working-directory: neon-project
+        run: |
+          python -m pytest tests/total_price_test.py\
+            --junitxml=test-results.xml \
+            --html=test-report.html \
+            --self-contained-html
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-report
+          path: |
+            neon-project/test-results.xml
+            neon-project/test-report.html
+
+      - name: Delete Neon branch
+        working-directory: neon-project
+        if: always()
+        run: |
+          python  setup_branch.py cleanup
