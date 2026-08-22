@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 import os
 from sqlalchemy.orm import Session
+
 from schemas import CouponSchema
 import database as db
 from models import Coupon

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from pydantic import BaseModel
 
 
@@ -19,9 +19,8 @@ class CouponSchema(BaseModel):
 
 class OrderSchema(BaseModel):
     user_id : int
-    created_at : datetime    
-    idx_orders_created : datetime
-    coupon_id : int
+    created_at : date
+    coupon_id : int | None = None
     
     model_config = {
     "from_attributes": True

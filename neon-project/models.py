@@ -28,7 +28,6 @@ class Order(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     created_at = Column(Date)
     
-    idx_orders_created = Column(Date, nullable=True)
     coupon_id = Column(Integer,  ForeignKey("coupons.id"), nullable=True)
 
 
