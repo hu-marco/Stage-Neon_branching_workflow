@@ -1,4 +1,4 @@
-name: new index in order
+name: new index in orders
 
 on:
   pull_request:
