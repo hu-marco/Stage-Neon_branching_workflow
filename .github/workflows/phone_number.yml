@@ -1,16 +1,8 @@
-name: new index in orders
+name: 2PR- add phone number
 
 on:
   pull_request:
-    branches: [ "new_index" ]
-  workflow_dispatch:
-    inputs:
-      migration_revision:
-        description: "Alembic migration revision"
-        required: false
-        default: "head"
-  
-
+    branches: [ "2PR" ]
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -22,7 +14,6 @@ jobs:
       DATABASE_ROLE: ${{ secrets.DATABASE_ROLE }}
 
       PR_NUMBER: ${{ github.event.pull_request.number || 'local'}}
-      MIGRATION_REVISION: ${{ inputs.migration_revision || 'head' }}
 
     steps:
       - name: Checkout repository
@@ -46,12 +37,12 @@ jobs:
       - name: Run database migrations
         working-directory: neon-project
         run: |
-          python setup_branch.py migrate 2f133e768707
+          python setup_branch.py migrate 9f9fe3b56a4f
           
       - name: Run tests
         working-directory: neon-project
         run: |
-          python -m pytest tests/new_index_test.py\
+          python -m pytest tests/phone_number_test.py\
             --junitxml=test-results.xml \
             --html=test-report.html \
             --self-contained-html
