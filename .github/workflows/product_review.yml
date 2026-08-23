@@ -17,7 +17,7 @@ jobs:
       DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
       DATABASE_ROLE: ${{ secrets.DATABASE_ROLE }}
 
-      PR_NUMBER: ${{ github.event.pull_request.number || 'local'}}
+      PR_NUMBER: ${{ github.event.pull_request.number || 'local_second'}}
 
     steps:
       - name: Checkout repository
