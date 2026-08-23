@@ -1,8 +1,12 @@
 name: 2PR- add product review
 
 on:
+  push:
+    branches: [ "main" ]
   pull_request:
-    branches: [ "2PR" ]
+  
+    branches: [ "main" ]
+  
 jobs:
   test:
     runs-on: ubuntu-latest
