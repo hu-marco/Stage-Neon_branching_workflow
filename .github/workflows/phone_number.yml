@@ -2,7 +2,8 @@ name: 2PR- add phone number
 
 on:
   pull_request:
-    branches: [ "2PR" ]
+    branches: ["main"]
+    types: [opened, synchronize, reopened]
 jobs:
   test:
     runs-on: ubuntu-latest
