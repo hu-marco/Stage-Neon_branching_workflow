@@ -51,7 +51,7 @@ def test_create_coupon():
 def test_coupon_code_present():
     test_session = db.create_session(os.environ["DATABASE_URL"])
     
-    def override_get_db(test_session):
+    def override_get_db():
         session = test_session()
         try:
             yield session
@@ -73,7 +73,7 @@ def test_coupon_code_populated():
 
     test_session = db.create_session(os.environ["DATABASE_URL"])
     
-    def override_get_db(test_session):
+    def override_get_db():
         session = test_session()
         try:
             yield session
@@ -99,7 +99,7 @@ def test_coupon_code_populated():
 def test_integration():
     test_session = db.create_session(os.environ["DATABASE_URL"])
     
-    def override_get_db(test_session):
+    def override_get_db():
         session = test_session()
         try:
             yield session
