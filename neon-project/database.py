@@ -87,7 +87,7 @@ def create_all_table():
                     CREATE TABLE products (
                         id SERIAL PRIMARY KEY,
                         name VARCHAR(15),
-                        price FLOAT,
+                        price NUMERIC(10,2),
                         stock INTEGER,
                         category_id INTEGER,
                         foreign key(category_id)
