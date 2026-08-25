@@ -96,7 +96,7 @@ def test_coupon_code_populated():
     finally:
         app.dependency_overrides.clear()    
         
-def integration_test():
+def test_integration():
     test_session = db.create_session(os.environ["DATABASE_URL"])
     
     def override_get_db(test_session):
