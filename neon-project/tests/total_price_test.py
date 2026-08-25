@@ -24,7 +24,7 @@ NEON_PROJECT_ID = os.environ["NEON_PROJECT_ID"]
 def test_total_price_present():
     test_session = db.create_session(os.environ["DATABASE_URL"])
     
-    def override_get_db(test_session):
+    def override_get_db():
         session = test_session()
         try:
             yield session
@@ -46,7 +46,7 @@ def test_total_price_corrected():
 
     test_session = db.create_session(os.environ["DATABASE_URL"])
     
-    def override_get_db(test_session):
+    def override_get_db():
         session = test_session()
         try:
             yield session
@@ -71,7 +71,7 @@ def test_total_price_corrected():
 def test_integration():
     test_session = db.create_session(os.environ["DATABASE_URL"])
     
-    def override_get_db(test_session):
+    def override_get_db():
         session = test_session()
         try:
             yield session
