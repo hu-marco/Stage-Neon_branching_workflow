@@ -11,7 +11,7 @@ from schemas import UserSchema
 router = APIRouter()
 
 @router.get("/login", response_model=UserSchema)
-def get_orders_by_date(email_address:str, db: Session = Depends(db.get_db)):
+def login(email_address:str, db: Session = Depends(db.get_db)):
     user = db.execute(
         select(User)
         .where(User.email == email_address)

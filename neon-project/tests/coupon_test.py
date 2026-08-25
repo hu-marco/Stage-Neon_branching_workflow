@@ -113,6 +113,10 @@ def test_integration():
         response = client.get(
             "/login?email_address=erica51@example.net"
         )
+        print("STATUS:", response.status_code)
+        print("RESPONSE:", response.json())
+
+        
         assert response.status_code == 200
 
         user = response.json()
