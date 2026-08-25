@@ -92,7 +92,7 @@ def test_coupon_code_populated():
             """)
         ).first()
         assert result is not None
-        assert result.coupon_id == "1"
+        assert result.coupon_id == 1
     finally:
         app.dependency_overrides.clear()    
         
