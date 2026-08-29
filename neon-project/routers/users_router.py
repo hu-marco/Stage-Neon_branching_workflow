@@ -8,7 +8,7 @@ import database as db
 from models import User
 from schemas import UserSchema
 
-router = APIRouter()
+router = APIRouter(prefix="/users")
 
 @router.get("/login", response_model=UserSchema)
 def login(email_address:str, db: Session = Depends(db.get_db)):

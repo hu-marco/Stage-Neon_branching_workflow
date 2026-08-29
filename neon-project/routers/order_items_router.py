@@ -6,7 +6,7 @@ from schemas import OrderItemSchema, OrderItemCreateSchema
 import database as db
 from models import OrderItem
 
-router = APIRouter()
+router = APIRouter(prefix="/order_items")
 
 @router.post("/create_order_item")
 def create_coupon(order_item: OrderItemCreateSchema, db: Session = Depends(db.get_db)):
@@ -23,3 +23,28 @@ def create_coupon(order_item: OrderItemCreateSchema, db: Session = Depends(db.ge
         "status": "created",
         "id": new_order_item.id
     }
+
+@router.get("/get_order_items_by_order_id", response_model=list[OrderItemSchema])
+def get_order_items_by_order_id(order_id: int ,db: Session = Depends(db.get_db)):
+    
+    order_items = db.execute(
+        select(OrderItem)
+        .where(OrderItem.order_id == order_id)
+    ).scalars().all()
+
+    return order_items
+
+
+@router.get("/get_order_items_by_100", response_model=list[OrderItemSchema])
+def get_order_items_by_100(page: int , order_id:int, db: Session = Depends(db.get_db)):
+    offset = (page - 1) * 100
+    products = (
+        db.query(OrderItem)
+        .where(OrderItem.order_id== order_id)
+        .order_by(OrderItem.id)
+        .offset(offset)
+        .limit(100)
+        .all()
+    )
+
+    return products

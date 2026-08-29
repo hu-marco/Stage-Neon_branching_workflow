@@ -10,3 +10,5 @@ requests
 pytest
 pytest-html
 httpx2
+jinja2
+pytest-playwright

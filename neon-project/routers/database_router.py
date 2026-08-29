@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 import database as db
 
 
-router = APIRouter()
+router = APIRouter(prefix="/database")
 
 @router.post("/create_tables")
 def create_all_tables():

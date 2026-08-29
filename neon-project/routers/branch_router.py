@@ -4,7 +4,7 @@ import os
 
 from branch import NeonClient
 
-router = APIRouter()
+router = APIRouter(prefix="/branch")
 
 load_dotenv()
 

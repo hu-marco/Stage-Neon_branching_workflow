@@ -35,7 +35,7 @@ def test_create_coupon():
     
     try:
         response = client.post(
-            "/create_coupon",
+            "/coupons/create_coupon",
             json={
                 "code": "WELCOME10",
                 "discount": 10
@@ -111,10 +111,8 @@ def test_integration():
     try:
         # Login control
         response = client.get(
-            "/login?email_address=erica51@example.net"
+            "/users/login?email_address=erica51@example.net"
         )
-        print("STATUS:", response.status_code)
-        print("RESPONSE:", response.json())
 
         
         assert response.status_code == 200
@@ -126,7 +124,7 @@ def test_integration():
         
         #create products
         response= client.post(
-            "/create_product",
+            "/products/create_product",
             json={
                 "name": "product1",
                 "price": 12,
@@ -137,7 +135,7 @@ def test_integration():
         product_1 = response.json()
         
         response= client.post(
-            "/create_product",
+            "/products/create_product",
             json={
                 "name": "product2",
                 "price": 19,
@@ -149,7 +147,7 @@ def test_integration():
         
         
         response= client.post(
-            "/create_product",
+            "/products/create_product",
             json={
                 "name": "product3",
                 "price": 43,
@@ -161,7 +159,7 @@ def test_integration():
         
         # create order
         response= client.post(
-            "/create_order",
+            "/orders/create_order",
             json={
                 "user_id": user['id'],
                 "created_at": date.today().isoformat()
@@ -173,7 +171,7 @@ def test_integration():
         
         # add products to order
         response= client.post(
-            "/create_order_item",
+            "/order_item/create_order_item",
             json={
                 "order_id": order['id'],
                 "product_id": product_1['id'],
@@ -184,7 +182,7 @@ def test_integration():
         order_item_1 = response.json()
         
         response= client.post(
-            "/create_order_item",
+            "/order_item/create_order_item",
             json={
                 "order_id": order['id'],
                 "product_id": product_2['id'],
@@ -195,7 +193,7 @@ def test_integration():
         order_item_2 = response.json()
         
         response= client.post(
-            "/create_order_item",
+            "/order_item/create_order_item",
             json={
                 "order_id": order['id'],
                 "product_id": product_3['id'],
@@ -206,7 +204,7 @@ def test_integration():
         order_item_3 = response.json()
         
         response = client.post(
-            "/create_coupon",
+            "/coupons/create_coupon",
             json={
                 "code": "ANNIVERSARY",
                 "discount": 10
@@ -217,8 +215,8 @@ def test_integration():
         
         coupon=response.json()
 
-        response = client.post(
-            f"/set_coupon?order_id={order['id']}&coupon_id={coupon['id']}"
+        response = client.patch(
+            f"/orders/set_coupon?order_id={order['id']}&coupon_id={coupon['id']}"
         )
         assert response.status_code == 200
         

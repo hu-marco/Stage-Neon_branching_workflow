@@ -8,7 +8,7 @@ import database as db
 from models import Order
 from schemas import OrderSchema, OrderCreateSchema
 
-router = APIRouter()
+router = APIRouter(prefix="/orders")
 
 @router.get("/get_orders_by_date", response_model=list[OrderSchema])
 def get_orders_by_date(created_at_from:str, db: Session = Depends(db.get_db)):
@@ -53,7 +53,7 @@ def create_order(order: OrderCreateSchema, db: Session = Depends(db.get_db)):
     }
     
     
-@router.post("/set_coupon")
+@router.patch("/set_coupon")
 def set_coupon_id(order_id:int, coupon_id:int, db: Session = Depends(db.get_db)):
     result = db.execute(
         text("""
@@ -77,8 +77,8 @@ def set_coupon_id(order_id:int, coupon_id:int, db: Session = Depends(db.get_db))
     }
 
 
-@router.post("/calculate_total")
-def set_coupon_id(order_id:int, db: Session = Depends(db.get_db)):
+@router.patch("/calculate_total")
+def calculate_total(order_id:int, db: Session = Depends(db.get_db)):
     result = db.execute(
         text("""
             UPDATE orders
@@ -129,7 +129,7 @@ def get_total_price(order_id:int, db: Session = Depends(db.get_db)):
     
 
 
-@router.post("/apply_discount")
+@router.patch("/apply_discount")
 def apply_discount(order_id:int, db: Session = Depends(db.get_db)):    
     result = db.execute(
         text("""
@@ -139,7 +139,7 @@ def apply_discount(order_id:int, db: Session = Depends(db.get_db)):
                     SELECT discount
                     FROM coupons c
                     WHERE c.id = orders.coupon_id
-                ) / 100.0
+                ) / 100
             )
             WHERE id = :order_id
               AND coupon_id IS NOT NULL
@@ -154,3 +154,29 @@ def apply_discount(order_id:int, db: Session = Depends(db.get_db)):
         "status": "success",
         "message": "Discount was applied"
     }
+
+@router.get("/get_orders_by_user_id", response_model=list[OrderSchema])
+def get_orders_by_user_id(user_id:int, db: Session = Depends(db.get_db)):
+    
+    orders = db.execute(
+        select(Order)
+        .where(Order.user_id == user_id)
+    ).scalars().all()
+    
+    return orders
+    
+    
+
+@router.get("/get_orders_by_100", response_model=list[OrderSchema])
+def get_orders_by_100(page: int, user_id:int ,db: Session = Depends(db.get_db)):
+    offset = (page - 1) * 100
+    orders = (
+        db.query(Order)
+        .where(Order.user_id == user_id)
+        .order_by(Order.id)
+        .offset(offset)
+        .limit(100)
+        .all()
+    )
+
+    return orders

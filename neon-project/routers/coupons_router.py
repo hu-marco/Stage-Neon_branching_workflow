@@ -6,7 +6,7 @@ from schemas import CouponCreateSchema
 import database as db
 from models import Coupon
 
-router = APIRouter()
+router = APIRouter(prefix="/coupons")
 
 @router.post("/create_coupon")
 def create_coupon(coupon: CouponCreateSchema, db: Session = Depends(db.get_db)):

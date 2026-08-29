@@ -84,7 +84,7 @@ def test_get_orders_by_date():
     app.dependency_overrides[db.get_db] = override_get_db
     try:
         response = client.get(
-            "/get_orders_by_date?created_at_from=2026-01-01"
+            "/orders/get_orders_by_date?created_at_from=2026-01-01"
         )
         assert response.status_code == 200
 
