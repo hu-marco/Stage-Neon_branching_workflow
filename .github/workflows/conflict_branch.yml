@@ -1,0 +1,93 @@
+name: Conflict -branch
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+      NEON_PROJECT_ID: ${{ secrets.NEON_PROJECT_ID }}
+      DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+      DATABASE_ROLE: ${{ secrets.DATABASE_ROLE }}
+
+      PR_NUMBER: ${{ github.event.pull_request.number || 'local'}}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r neon-project/requirements.txt
+
+      # -------------------------
+      # BRANCH 1
+      # -------------------------
+
+
+      - name: Create first Neon branch 
+        working-directory: neon-project
+        run: |
+          python  setup_branch.py create
+
+      - name: Save branch 1 ID
+        run: |
+          echo "BRANCH_1_ID=$NEON_BRANCH_ID" >> "$GITHUB_ENV"
+
+      - name: Run database migrations
+        working-directory: neon-project
+        run: |
+          python setup_branch.py migrate b1540c141bb7
+
+          
+      # -------------------------
+      # BRANCH 2
+      # -------------------------
+                
+      - name: Change PR number
+        run: |
+          echo "PR_NUMBER=${PR_NUMBER}-second" >> "$GITHUB_ENV"
+          
+      - name: Create second Neon branch 
+        working-directory: neon-project
+        run: |
+          python  setup_branch.py create
+
+      - name: Run database migrations
+        working-directory: neon-project
+        run: |
+          python setup_branch.py migrate d555aff7f21e
+     
+          
+      # -------------------------
+      # DELETE BRANCH 1
+      # -------------------------
+                
+
+      - name: Delete first Neon branch
+        working-directory: neon-project
+        if: always()
+        run: |
+          python  setup_branch.py delete "$BRANCH_1_ID"
+
+          
+      # -------------------------
+      # DELETE BRANCH 2
+      # -------------------------
+                
+
+      - name: Delete second Neon branch
+        working-directory: neon-project
+        if: always()
+        run: |
+          python  setup_branch.py cleanup
