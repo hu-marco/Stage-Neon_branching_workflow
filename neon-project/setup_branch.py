@@ -4,6 +4,7 @@ from branch_command import (
     create_database,
     run_migrations,
     cleanup_database,
+    delete_database
 )
 
 
@@ -18,6 +19,10 @@ elif command == "migrate":
 
 elif command == "cleanup":
     cleanup_database()
+
+elif command == "delete":
+    branch_id = sys.argv[2]
+    delete_database()
 
 else:
     raise ValueError(f"Unknown command: {command}")

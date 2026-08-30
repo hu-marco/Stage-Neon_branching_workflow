@@ -51,6 +51,18 @@ def run_migrations(revision):
     end = time.perf_counter()
     print(f"Tempo: {end - start:.6f} secondi")
 
+def delete_database(BRANCH_ID):
+    branch_id = BRANCH_ID
+
+    if not branch_id:
+        return
+
+    client = get_client()
+
+    client.delete_branch(
+        branch_id=branch_id,
+    )
+
 
 
 def cleanup_database():
