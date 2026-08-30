@@ -168,7 +168,7 @@ def test_integration():
         order_item_2 = response.json()
         
         response= client.post(
-            "/order_itemscreate_order_item",
+            "/order_items/create_order_item",
             json={
                 "order_id": order['id'],
                 "product_id": product_3['id'],
