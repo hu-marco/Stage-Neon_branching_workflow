@@ -316,7 +316,7 @@ def test_end_to_end(page):
         "() => localStorage.getItem('viewed_order_id')"
         )
         
-        assert viewed_order_id == "order_id"
+        assert viewed_order_id == order_id
         
         page.goto("http://127.0.0.1:8000/order_item_site")
         
