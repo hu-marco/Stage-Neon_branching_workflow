@@ -299,7 +299,7 @@ def test_end_to_end(page):
         )
         
         assert order_id is not None
-        assert order_id == "10001"
+        assert order_id == "10002"
         
         page.locator("#button-1").click()
         page.locator("#button-2").click()
@@ -307,7 +307,7 @@ def test_end_to_end(page):
         
         page.goto("http://127.0.0.1:8000/order_site")
         
-        page.locator("#button-10001").click()
+        page.locator("#button-10002").click()
         
         page.wait_for_function(
         "() => localStorage.getItem('viewed_order_id') !== null"
@@ -316,7 +316,7 @@ def test_end_to_end(page):
         "() => localStorage.getItem('viewed_order_id')"
         )
         
-        assert viewed_order_id == "10001"
+        assert viewed_order_id == "10002"
         
         page.goto("http://127.0.0.1:8000/order_item_site")
         
