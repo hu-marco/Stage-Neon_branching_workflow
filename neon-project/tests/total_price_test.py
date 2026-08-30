@@ -320,9 +320,20 @@ def test_end_to_end(page):
         
         page.goto("http://127.0.0.1:8000/order_item_site")
         
-        page.locator("#calculate-total-button").click()
-        page.locator("#get-total-button").click()
-        
+        with page.expect_response(
+            lambda response:
+                "/orders/calculate_total" in response.url
+                and response.status == 200
+        ):
+            page.locator("#calculate-total-button").click()
+
+        with page.expect_response(
+            lambda response:
+                "/orders/get_total_price" in response.url
+                and response.status == 200
+        ):
+            page.locator("#get-total-button").click()
+            
                 
         text = page.locator("#total")
         expect(text).to_have_text("€2998.49")
