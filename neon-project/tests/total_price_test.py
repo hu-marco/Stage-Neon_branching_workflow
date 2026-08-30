@@ -258,6 +258,18 @@ def test_end_to_end(page):
 
     app.dependency_overrides[db.get_db] = override_get_db
     try:
+        env = os.environ.copy()
+        env["DATABASE_URL"] = os.environ["DATABASE_URL"]
+        server = subprocess.Popen(
+            [
+                "uvicorn",
+                "main:app",
+                "--host", "127.0.0.1",
+                "--port", "8000",
+            ],
+            env=env,
+        )
+        wait_for_server("http://127.0.0.1:8000/login_site")
         
         
         page.goto("http://127.0.0.1:8000/login_site")
@@ -339,10 +351,9 @@ def test_end_to_end(page):
         
         
     finally:
+        server.terminate()
+        server.wait()
         app.dependency_overrides.clear()
-
-
-
  
 """    
 def test_all(page):
