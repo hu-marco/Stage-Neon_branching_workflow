@@ -171,7 +171,7 @@ def test_integration():
         
         # add products to order
         response= client.post(
-            "/order_item/create_order_item",
+            "/order_items/create_order_item",
             json={
                 "order_id": order['id'],
                 "product_id": product_1['id'],
@@ -182,7 +182,7 @@ def test_integration():
         order_item_1 = response.json()
         
         response= client.post(
-            "/order_item/create_order_item",
+            "/order_items/create_order_item",
             json={
                 "order_id": order['id'],
                 "product_id": product_2['id'],
@@ -193,7 +193,7 @@ def test_integration():
         order_item_2 = response.json()
         
         response= client.post(
-            "/order_item/create_order_item",
+            "/order_items/create_order_item",
             json={
                 "order_id": order['id'],
                 "product_id": product_3['id'],
