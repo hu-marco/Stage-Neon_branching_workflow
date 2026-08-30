@@ -4,11 +4,7 @@ on:
   pull_request:
     branches: [ "total_price" ]
   workflow_dispatch:
-    inputs:
-      migration_revision:
-        description: "Alembic migration revision"
-        required: false
-        default: "head"
+
   
 
 jobs:
@@ -21,8 +17,7 @@ jobs:
       DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
       DATABASE_ROLE: ${{ secrets.DATABASE_ROLE }}
 
-      PR_NUMBER: ${{ github.event.pull_request.number || 'local'}}
-      MIGRATION_REVISION: ${{ inputs.migration_revision || 'head' }}
+      #PR_NUMBER: ${{ github.event.pull_request.number || 'local'}}
 
     steps:
       - name: Checkout repository

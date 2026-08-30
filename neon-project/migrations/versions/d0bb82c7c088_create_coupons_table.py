@@ -25,6 +25,11 @@ def upgrade() -> None:
         sa.Column("code", sa.String()),
         sa.Column("discount", sa.Integer())
     )
+    
+    op.execute("""
+        INSERT INTO coupons(code, discount)
+        VALUES ('ANNIVERSARY', 10);
+    """)
 
 
 

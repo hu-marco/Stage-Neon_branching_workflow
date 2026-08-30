@@ -25,7 +25,7 @@ config = context.config
 #)
 
 
-db_url= os.getenv("DATABASE_URL_TEST")
+db_url= os.getenv("DATABASE_URL")
 
 if not db_url:
     raise RuntimeError("db_url in alembic not set or loaded")

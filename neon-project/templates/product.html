@@ -32,7 +32,7 @@
 	</div> 
 </nav> 
 <form onsubmit="createOrder(event)">
- <button class="btn btn-primary w-100" type="submit"> 
+ <button id="create-order-button" class="btn btn-primary w-100" type="submit"> 
 	Create order
  </button>
 </form>
@@ -236,11 +236,7 @@ function displayProducts(products) {
 							</div>
 
 
-                            <button
-                                type="button"
-                                class="btn btn-primary w-100"
-                                data-testid="add-to-cart-${product.id}"
-                                onclick="addToCart(${product.id})">
+                            <button id="button-${product.id}" type="button" class="btn btn-primary w-100" data-testid="add-to-cart-${product.id}" onclick="addToCart(${product.id})">
                                 Add to cart
                             </button>
 

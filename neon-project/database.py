@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from decimal import *
 
 load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL_TEST")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not DATABASE_URL:
     raise RuntimeError("DATABASE_URL not set or loaded")

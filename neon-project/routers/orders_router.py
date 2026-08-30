@@ -139,7 +139,7 @@ def apply_discount(order_id:int, db: Session = Depends(db.get_db)):
                     SELECT discount
                     FROM coupons c
                     WHERE c.id = orders.coupon_id
-                ) / 100
+                ) / 100.0
             )
             WHERE id = :order_id
               AND coupon_id IS NOT NULL
