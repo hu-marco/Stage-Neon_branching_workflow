@@ -22,7 +22,7 @@ elif command == "cleanup":
 
 elif command == "delete":
     branch_id = sys.argv[2]
-    delete_database()
+    delete_database(branch_id)
 
 else:
     raise ValueError(f"Unknown command: {command}")
