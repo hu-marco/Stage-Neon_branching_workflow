@@ -4,12 +4,6 @@ on:
   pull_request:
     branches: [ "error" ]
   workflow_dispatch:
-    inputs:
-      migration_revision:
-        description: "Alembic migration revision"
-        required: false
-        default: "head"
-  
 
 jobs:
   test:
@@ -22,7 +16,6 @@ jobs:
       DATABASE_ROLE: ${{ secrets.DATABASE_ROLE }}
 
       PR_NUMBER: ${{ github.event.pull_request.number || 'local'}}
-      MIGRATION_REVISION: ${{ inputs.migration_revision || 'head' }}
 
     steps:
       - name: Checkout repository
@@ -46,7 +39,7 @@ jobs:
       - name: Run migration (expected to fail)
         run: |
           set +e
-          alembic upgrade head
+          alembic upgrade d7b873c2a0a0
           status=$?
           
           if [ $status -eq 0 ]; then
