@@ -307,7 +307,7 @@ def test_end_to_end(page):
         
         page.goto("http://127.0.0.1:8000/order_site")
         
-        page.locator("#button-10002").click()
+        page.locator(f"#button-{order_id}").click()
         
         page.wait_for_function(
         "() => localStorage.getItem('viewed_order_id') !== null"
@@ -316,7 +316,7 @@ def test_end_to_end(page):
         "() => localStorage.getItem('viewed_order_id')"
         )
         
-        assert viewed_order_id == "10002"
+        assert viewed_order_id == "order_id"
         
         page.goto("http://127.0.0.1:8000/order_item_site")
         
