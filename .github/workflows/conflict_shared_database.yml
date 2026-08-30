@@ -26,9 +26,11 @@ jobs:
           pip install -r neon-project/requirements.txt
 
       - name: Run migration - delete addresses
+        working-directory: neon-project
         run: alembic upgrade b1540c141bb7
 
       - name: Run migration - add CAP column(expected to fail)
+        working-directory: neon-project
         run: |
           set +e
           alembic upgrade d555aff7f21e
@@ -41,6 +43,7 @@ jobs:
           echo "Migration failed as expected"
           
       - name: Restore database
+        working-directory: neon-project
         if: always()
         run: alembic downgrade -1
           
