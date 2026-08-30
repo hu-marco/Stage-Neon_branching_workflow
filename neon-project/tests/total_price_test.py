@@ -257,8 +257,9 @@ def test_end_to_end(page):
             session.close()
 
     app.dependency_overrides[db.get_db] = override_get_db
-    session = test_session()
     try:
+        
+        
         page.goto("http://127.0.0.1:8000/login_site")
 
         page.locator("#email").fill("erica51@example.net")
