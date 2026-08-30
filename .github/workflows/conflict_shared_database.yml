@@ -1,0 +1,49 @@
+name: Conflict -shared database
+
+on:
+  pull_request:
+    
+  workflow_dispatch:
+
+  
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      SHARED_DATABASE_URL: ${{ secrets.SHARED_DATABASE_URL }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r neon-project/requirements.txt
+
+      - name: Run migration - delete addresses
+        env:
+          DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+        run: alembic upgrade b1540c141bb7
+
+      - name: Run migration - add CAP column(expected to fail)
+        env:
+          DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+        run: |
+          set +e
+          alembic upgrade d555aff7f21e
+          status=$?
+          
+          if [ $status -eq 0 ]; then
+            echo "ERROR: migration succeeded, but it was expected to fail"
+            exit 1
+          fi
+          echo "Migration failed as expected"
+        
+          
