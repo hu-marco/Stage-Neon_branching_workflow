@@ -1,11 +1,9 @@
 name: 2PR- add product review
 
 on:
-  #push:
-   # branches: [ "main" ]
-  pull_request:
-  
+  push:
     branches: [ "main" ]
+  workflow_dispatch:
   
 jobs:
   test:
