@@ -24,7 +24,7 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     op.create_table(
-        "coupons",
+        "addresses",
         sa.Column("id", sa.Integer(), primary_key=True),
         sa.Column("user_id", sa.Integer()),
         sa.Column("city", sa.String()),
