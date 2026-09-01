@@ -2,7 +2,7 @@ name: total price in orders
 
 on:
   pull_request:
-    branches: [ "total_price" ]
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
 
   
