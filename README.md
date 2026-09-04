@@ -18,8 +18,8 @@ La repository può essere diverso in diverse parti:
 * **Migrazioni** : useremo Alembic, uno strumento per la gestione dei database in Python.
 * **Database** : l'argomento principale è proprio il Postgres di Neon (neon.com)
 * **Pipeline** : useremo  Github Actions di Github.
-* **Test** : useremo pytest, una funzione di Python.
-* **Sito web** : viene utilizzato HTML linguaggio usato per la creazione le pagine web, CSS usato per l'estetica e Javascript responsabile per rendere le pagine interattive.
+* **Test** : useremo pytest, una libreria di Python.
+* **Sito web** : viene utilizzato HTML, linguaggio usato per la creazione delle pagine web, CSS usato per l'estetica e Javascript responsabile per rendere le pagine interattive.
 
 ### 3.1 API
 
@@ -27,25 +27,26 @@ Dal punto di vista di API, utilizziamo FastAPI per creare dei file Python all'in
 
 ### 3.2 Migrazioni
 
-Le migrazioni sono cambiamenti o trasferimenti di dati delle tabelle o database.
+Le migrazioni sono cambiamenti o trasferimenti di dati delle tabelle o di database.
 Ciò che usiamo, Alembic, rende la creazione e gestione delle migrazioni in modo semplice e facilmente comprensibile.
-Nella cartella **migrations** dove sono presenti le migrazioni.
+Nella cartella **migrations** sono presenti le migrazioni.
 
 
 ### 3.3 Database
 
 Dal lato del database, utilizzeremo SQLAlchemy e Pydantic per gestire il database.
-Anche in questo vengono suddivice in diverse parti per gestire i diversi compiti:
+
+Questa sezione è diviso in diverse parti per gestire le diverse proprietà:
 - **models.py** e **schemas.py**: vengono definiti i modelli delle tabelle e facilita la creazione o recupero dell'informazioni.
-- **database.py**: vengono creati le tabelle e inserite i primi dati randomici.
+- **database.py**: vengono creati le tabelle e inserisce i primi dati randomici.
 - **branch.py** : contiene le funzioni per la creazione del branch, mentre **branch_command.py** e **setup_branch.py** sono necessari nei GitHub Actions.
 
 
 ### 3.4 Pipeline
 
 Pipeline DevOps è un insieme di processi e strumenti automatizzati che consente ai sviluppatori di collaborare.
-Nel nostro caso, viene utilizzato Github Actions, di cui a seconda dell'uso può essere gratuito o fornisce un limito uso.
-In **.github/workflows** contiene tutti i actions per la verifica e test.
+Nel nostro caso, viene utilizzato Github Actions, di cui a seconda dell'uso può essere gratuito o fornisce un limitato quantità di risorse per uso.
+Nella cartella **.github/workflows** sono presenti tutti i actions per la verifica e test.
 
 
 ### 3.5 Test
@@ -62,7 +63,7 @@ Essendo uno scheletro esso contiene il minimo dei controlli.
 Per il corretto funzionamento dei workflows, devo essere salvati in secrets della repository i seguenti dati:
 
 - **DATABASE_NAME**: nome del database.
-- **DATABASE_ROLE**: ruolo sul database (esempio. proprietario).
+- **DATABASE_ROLE**: ruolo nel database (es. proprietario).
 - **NEON_API_KEY**: il punto di accesso al database (usato per la creazione dei branch).
 - **NEON_PROJECT_ID**: id del progetto.
 - **SHARED_DATABASE_URL**: url di un database condiviso (in questo caso ho usato un branch).
