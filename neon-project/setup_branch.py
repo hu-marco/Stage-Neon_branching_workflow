@@ -1,28 +1,28 @@
 import sys
 
 from branch_command import (
-    create_database,
+    create_branch,
     run_migrations,
-    cleanup_database,
-    delete_database
+    cleanup_branch,
+    delete_branch
 )
 
 
 command = sys.argv[1]
 
 if command == "create":
-    create_database()
+    create_branch()
 
 elif command == "migrate":
     revision = sys.argv[2]
     run_migrations(revision)
 
 elif command == "cleanup":
-    cleanup_database()
+    cleanup_branch()
 
 elif command == "delete":
     branch_id = sys.argv[2]
-    delete_database(branch_id)
+    delete_branch(branch_id)
 
 else:
     raise ValueError(f"Unknown command: {command}")
