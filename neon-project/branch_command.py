@@ -10,7 +10,7 @@ def get_client() -> NeonClient:
     )
 
 
-def create_branch() -> str:
+def create_database() -> str:
     client = get_client()
 
     pr_number = os.environ["PR_NUMBER"]
@@ -51,7 +51,7 @@ def run_migrations(revision):
     end = time.perf_counter()
     print(f"Tempo: {end - start:.6f} secondi")
 
-def delete_branch(BRANCH_ID):
+def delete_database(BRANCH_ID):
     branch_id = BRANCH_ID
 
     if not branch_id:
@@ -65,7 +65,7 @@ def delete_branch(BRANCH_ID):
 
 
 
-def cleanup_branch():
+def cleanup_database():
     branch_id = os.environ.get("NEON_BRANCH_ID")
 
     if not branch_id:
