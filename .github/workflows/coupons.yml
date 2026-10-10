@@ -46,7 +46,6 @@ jobs:
       - name: Run database migrations
         run: |
           python neon-project/setup_branch.py migrate 1b6df6316c0e
-
           
       - name: Check project
         working-directory: neon-project
@@ -56,8 +55,6 @@ jobs:
           python -c "import os; print(os.getcwd())"
           python -c "import sys; print(sys.path)"
           python -c "import main; print(main.__file__)"
-
-
 
       - name: Run tests
         working-directory: neon-project
